@@ -1,0 +1,107 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+</head>
+<body>
+<style>
+.card {
+height:200px;
+width:200px;
+background:lightblue;
+display:flex;
+padding:2px;
+margin:2px;
+float:left;
+}
+
+.selected{
+background:red;
+}
+</style>
+
+<div class="cards">
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched"></div>
+<div class="card unmatched" ></div>
+</div>
+
+<script>
+var app = {
+array: [1,1,2,2,3,3,4,4],
+init: function(){
+app.shuffle();
+},
+
+/* Shuffle */
+
+shuffle: function(){
+var i,temp,random;
+for(i=0;i<app.array.length;i++){
+random = Math.round(Math.random() * i);
+temp = app.array[i];
+app.array[i] = app.array[random];
+app.array[random] = temp;
+}
+app.output();
+},
+
+/*Output Append HTML */
+
+output: function(){
+console.log(app.array);
+$('.card').each( function(index){
+$(this).attr('data-card-value',app.array[index]);
+app.clickHandler();
+});
+
+},
+clickHandler: function(){
+console.log('Init Click Handler');
+$('.card').click(function(){
+console.log('Clicked');
+$(this).html('<p>'+$(this).data('cardValue')+'</p>');
+$(this).addClass('selected');
+app.checkMatch();
+})
+},
+checkMatch: function(){
+if($('.selected').length == 2) {
+if($('.selected').first().data('cardValue') == $('.selected').last().data('cardValue'))
+{
+$('.selected').each(function(index){
+$(this).animate({opacity:0});
+$(this).removeClass('selected');
+$(this).removeClass('unmatched');
+})
+}else{
+setTimeout(function(){
+$('.selected').each(function(index){
+$(this).html('').removeClass('selected');
+})
+
+},1000);
+}
+app.checkWin();
+}
+},
+
+checkWin: function(){
+if($('.unmatched').length == 0){
+$('.cards').html('<h1>You Won!</h1>');
+}
+}
+}
+
+
+$(document).ready(function (){
+app.init();
+})
+</script>
+</body>
+</html>
